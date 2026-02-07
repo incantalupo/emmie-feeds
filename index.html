@@ -873,17 +873,18 @@
                 return parseFloat((totalMl / 29.5735).toFixed(1));
             });
 
-            const maxTotal = Math.max(...dayTotals, 0.1);
+            // Use a fixed scale: 30 oz = 100% height (typical daily max for a baby)
+            const maxScale = 30;
 
             chart.innerHTML = days.map((day, i) => {
                 const total = dayTotals[i];
-                const height = Math.max((total / maxTotal) * 100, total > 0 ? 10 : 0);
+                const heightPercent = Math.min((total / maxScale) * 100, 100);
                 const label = day.toLocaleDateString('en-US', { weekday: 'short' });
                 
                 return `
                     <div class="bar-wrapper">
-                        ${total > 0 ? `<div class="bar-value">${total}</div>` : ''}
-                        <div class="bar" style="height: ${height}%; min-height: ${total > 0 ? '20px' : '4px'};"></div>
+                        ${total > 0 ? `<div class="bar-value">${total} oz</div>` : ''}
+                        <div class="bar" style="height: ${heightPercent}%; min-height: ${total > 0 ? '8px' : '4px'};"></div>
                         <div class="bar-label">${label}</div>
                     </div>
                 `;
