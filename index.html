@@ -870,20 +870,20 @@
                     new Date(f.timestamp).toDateString() === dayStr
                 );
                 const totalMl = dayFeeds.reduce((sum, f) => sum + f.amount, 0);
-                return (totalMl / 29.5735).toFixed(1);
+                return parseFloat((totalMl / 29.5735).toFixed(1));
             });
 
-            const maxTotal = Math.max(...dayTotals, 1);
+            const maxTotal = Math.max(...dayTotals, 0.1);
 
             chart.innerHTML = days.map((day, i) => {
                 const total = dayTotals[i];
-                const height = (total / maxTotal) * 100;
+                const height = Math.max((total / maxTotal) * 100, total > 0 ? 10 : 0);
                 const label = day.toLocaleDateString('en-US', { weekday: 'short' });
                 
                 return `
                     <div class="bar-wrapper">
                         ${total > 0 ? `<div class="bar-value">${total}</div>` : ''}
-                        <div class="bar" style="height: ${height}%"></div>
+                        <div class="bar" style="height: ${height}%; min-height: ${total > 0 ? '20px' : '4px'};"></div>
                         <div class="bar-label">${label}</div>
                     </div>
                 `;
